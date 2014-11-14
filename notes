@@ -1,0 +1,14 @@
+createFreshImprintSimple(data:{}) {
+ apply data keys to new imprint
+
+createFreshImprintFunctional(f:(), data:{}) {
+ call f(new_imprint, data)
+
+recordImprint(imprint: obj, program: {}) {
+ recordForImprint:obj[imprint.record_index] = program
+
+playback(imprint: obj) {
+ program = recordForImprint:obj[imprint.record_index] 
+ obj.playback_program(program)
+ obj.iterate_playback_index (//includes changing direction)
+
