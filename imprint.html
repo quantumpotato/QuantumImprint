@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+<head>
+<style type='text/css'>
+<script type="text/javascript">
+canvas {
+  border: 1px solid #aaa;
+  cursor: none;
+}
+</style>
+<script type="text/javascript" src="jquery-1.4.3.min.js"></script>
+<script type="text/javascript" src="jshashtable-3.0.js"></script>
+<script type="text/javascript">
+var context;
+var width = 500;
+var height = 500;
+
+function setBackground() {
+	context.clearRect(0, 0, width, height);
+	context.fillStyle = "black";
+	context.fillRect(0,0,width,height);
+}
+
+function point(x,y) {
+	this.x = x;
+	this.y = y;
+}
+
+var mouse = new point(0,0);
+var records = new Hashtable();
+
+function record(actor, actions) {
+	if (records.get(actor) === null) {
+		records.put(actor, []);
+	}
+	var recordedActions = records.get(actor);
+	recordedActions.push(actions);
+}
+
+record(mouse, 1);
+alert(records.get(mouse));
+
+
+function drawCircle(p,colour,radius) {
+	context.fillStyle = colour;
+	context.beginPath();
+	context.arc(p.x,p.y,radius,0,Math.PI*2,true);
+	context.closePath();
+	context.fill();
+}
+
+function showPlayer() {
+	drawCircle(mouse, "blue", 10);
+}
+
+function showClones() {
+  for (var i = 0; i < clones.length; i++) {
+  	var c = cats[i];
+  	drawCircle(c, "green", 5);
+  }
+}
+
+var index = 0;
+
+function draw() {
+	setBackground();
+	//showMouse();
+	var data = {"x" : mouse.x, "y" : mouse.y}
+	record(mouse, data);
+	var points = records.get(mouse);
+	console.log(points[index]);
+	index++;
+}
+
+$(document).ready(function() {
+  var canvas = $('#canvas');	
+  context = canvas.get(0).getContext('2d');
+  
+  setInterval(draw, 10);
+  canvas.mousemove(function(e) {
+    var mousex = e.pageX - canvas.offset().left;
+    var mousey = e.pageY - canvas.offset().top;
+
+		mouse.x = mousex;
+		mouse.y = mousey;		
+  }); 
+
+});
+
+</script>
+</head>
+<body>
+<canvas id='canvas' width=500 height=500></canvas>
+</body>
+</html>
