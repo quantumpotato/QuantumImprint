@@ -40,7 +40,7 @@ function createRecord(key, info, actions) {
 	info["key"] = key;
 	var recordHash = {"info" : info, "actions" : actions, "time_index": 0, "time_direction" : 1};
 	records.push(recordHash);
-	alert("record actions: " + records[0].actions);
+	//alert("record actions: " + records[0].actions);
 }
 
 function createRecordFromImprint(key) {
@@ -57,15 +57,16 @@ function imprint(key, actions) {
 
 var mouseInfo = {"category" : "painter"};
 createImprintable("mouse", mouseInfo);
-for (var i = 0; i < 10; i ++) {
-	imprint("mouse", {"x" : i * 10, "y" : i * 10, "color" : "blue", "radius" : 50});
-}
 
-alert("actions" + imprintables.get("mouse")["actions"]);
+// for (var i = 0; i < 10; i ++) {
+// 	imprint("mouse", {"x" : i * 10, "y" : i * 10, "color" : "blue", "radius" : 50});
+// }
 
-createRecordFromImprint("mouse");
-alert(records[0]["actions"].length);
-alert(imprintables.get("mouse")["actions"]);
+//alert("actions" + imprintables.get("mouse")["actions"]);
+
+//createRecordFromImprint("mouse");
+// alert(records[0]["actions"].length);
+// alert(imprintables.get("mouse")["actions"]);
 
 function playbackRecords() {
 	for (var i = 0; i < records.length; i++) {
@@ -85,13 +86,12 @@ function playbackRecords() {
 
 function playbackRecordedImprint(info, actions, time_index, time_direction) {
 	if (info["category"] === "painter") {
-		drawCircle({"x" : 50, "y" : 50}, "blue", 50);
 		doPaintingActions(actions);
 	}	
 }
 
 function doPaintingActions(actions) {
-	drawCircle({"x" : actions["x"], "y" : actions["x"]}, actions["color"], actions["radius"]);
+	drawCircle({"x" : actions["x"], "y" : actions["y"]}, actions["color"], actions["radius"]);
 }
 
 function drawCircle(p,colour,radius) {
@@ -118,6 +118,8 @@ var index = 0;
 function draw() {
 	setBackground();
 	playbackRecords();
+
+	imprint("mouse", {"x" : mouse.x, "y" : mouse.y, "color" : "blue", "radius" : 15});
 	//showMouse();
 	// var data = {"x" : mouse.x, "y" : mouse.y}
 	// record(mouse, data);
@@ -138,6 +140,10 @@ $(document).ready(function() {
 		mouse.x = mousex;
 		mouse.y = mousey;		
   }); 
+
+  canvas.click(function(e) {
+  	createRecordFromImprint("mouse");
+  });
 
 });
 
