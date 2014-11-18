@@ -27,19 +27,72 @@ function point(x,y) {
 }
 
 var mouse = new point(0,0);
-var records = new Hashtable();
+var imprintables = new Hashtable();
+var records = [];
 
-function record(actor, actions) {
-	if (records.get(actor) === null) {
-		records.put(actor, []);
-	}
-	var recordedActions = records.get(actor);
-	recordedActions.push(actions);
+
+function createImprintable(key, info) {
+	var imprintHash = {"info" : info, "actions" : []};
+	imprintables.put(key, imprintHash);
 }
 
-record(mouse, 1);
-alert(records.get(mouse));
+function createRecord(key, info, actions) {
+	info["key"] = key;
+	var recordHash = {"info" : info, "actions" : actions, "time_index": 0, "time_direction" : 1};
+	records.push(recordHash);
+	alert("record actions: " + records[0].actions);
+}
 
+function createRecordFromImprint(key) {
+		var imprintedRecord = imprintables.get(key);
+		createRecord(key, imprintedRecord["info"], imprintedRecord["actions"]);
+		//imprintedRecord["actions"] = [];
+}
+
+function imprint(key, actions) {
+	var imprintHash = imprintables.get(key);
+	var imprintedActions = imprintHash["actions"];
+	imprintedActions.push(actions)
+}
+
+var mouseInfo = {"category" : "painter"};
+createImprintable("mouse", mouseInfo);
+for (var i = 0; i < 10; i ++) {
+	imprint("mouse", {"x" : i * 10, "y" : i * 10, "color" : "blue", "radius" : 50});
+}
+
+alert("actions" + imprintables.get("mouse")["actions"]);
+
+createRecordFromImprint("mouse");
+alert(records[0]["actions"].length);
+alert(imprintables.get("mouse")["actions"]);
+
+function playbackRecords() {
+	for (var i = 0; i < records.length; i++) {
+		var recordHash = records[i];
+		console.log(recordHash);
+		playbackRecordedImprint(recordHash["info"], recordHash["actions"][recordHash["time_index"]], recordHash["time_index"], recordHash["time_direction"]);
+		recordHash["time_index"] = recordHash["time_index"] + recordHash["time_direction"];
+		if (recordHash["time_index"] > recordHash["actions"].length - 1) {
+			recordHash["time_index"] = recordHash["actions"].length - 1;
+			recordHash["time_direction"] = -1;
+		} else if (recordHash["time_index"] < 0) {
+			recordHash["time_index"] = 0
+			recordHash["time_direction"] = 1;
+		}
+	}
+}
+
+function playbackRecordedImprint(info, actions, time_index, time_direction) {
+	if (info["category"] === "painter") {
+		drawCircle({"x" : 50, "y" : 50}, "blue", 50);
+		doPaintingActions(actions);
+	}	
+}
+
+function doPaintingActions(actions) {
+	drawCircle({"x" : actions["x"], "y" : actions["x"]}, actions["color"], actions["radius"]);
+}
 
 function drawCircle(p,colour,radius) {
 	context.fillStyle = colour;
@@ -64,12 +117,13 @@ var index = 0;
 
 function draw() {
 	setBackground();
+	playbackRecords();
 	//showMouse();
-	var data = {"x" : mouse.x, "y" : mouse.y}
-	record(mouse, data);
-	var points = records.get(mouse);
-	console.log(points[index]);
-	index++;
+	// var data = {"x" : mouse.x, "y" : mouse.y}
+	// record(mouse, data);
+	// var points = records.get(mouse);
+	// console.log(points[index]);
+	// index++;
 }
 
 $(document).ready(function() {
