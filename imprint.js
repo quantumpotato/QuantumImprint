@@ -1,3 +1,6 @@
+var imprintables = {};
+var records = [];
+
 function createImprintable(key, info) {
 	var imprintHash = {"info" : info, "actions" : []};
 	imprintables[key] = imprintHash;

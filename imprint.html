@@ -27,10 +27,8 @@ function point(x,y) {
 }
 
 var mouse = new point(0,0);
-var imprintables = {};
-var records = [];
 
-function playbackRecordedImprint(info, actions, time_index, time_direction) {
+function playbackRecordedImprint(info, actions, timeIndex, timeDirection) {
 	if (info["category"] === "painter") {
 		doPaintingActions(actions);
 	}	
@@ -72,9 +70,6 @@ function draw() {
 	drawCircle(mouse, currentColor, 5);
 
 	imprint("mouse", {"x" : mouse.x, "y" : mouse.y, "color" : currentColor, "radius" : 5});
-
-	context.fillStyle = "white";
-	context.fillText("Move mouse to record, click to play back your recording", 100, 0);
 }
 
 function randomColor() {
@@ -106,6 +101,8 @@ $(document).ready(function() {
 </script>
 </head>
 <body>
+<h1>Imprint Demo</h1>
+<p>Move mouse to record painting, click to play back!</p>
 <canvas id='canvas' width=500 height=500></canvas>
 </body>
 </html>
