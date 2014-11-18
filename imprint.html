@@ -9,7 +9,6 @@ canvas {
 }
 </style>
 <script type="text/javascript" src="jquery-1.4.3.min.js"></script>
-<script type="text/javascript" src="jshashtable-3.0.js"></script>
 <script type="text/javascript">
 var context;
 var width = 500;
@@ -27,12 +26,13 @@ function point(x,y) {
 }
 
 var mouse = new point(0,0);
-var imprintables = new Hashtable();
+var imprintables = {};
 var records = [];
 
 function createImprintable(key, info) {
 	var imprintHash = {"info" : info, "actions" : []};
-	imprintables.put(key, imprintHash);
+	imprintables[key] = imprintHash;
+	//imprintables.put(key, imprintHash);
 }
 
 function createRecord(key, info, actions) {
@@ -42,13 +42,13 @@ function createRecord(key, info, actions) {
 }
 
 function createRecordFromImprint(key) {
-		var imprintedRecord = imprintables.get(key);
+		var imprintedRecord = imprintables[key];
 		createRecord(key, imprintedRecord["info"], imprintedRecord["actions"]);
 		imprintedRecord["actions"] = [];
 }
 
 function imprint(key, actions) {
-	var imprintHash = imprintables.get(key);
+	var imprintHash = imprintables[key];
 	var imprintedActions = imprintHash["actions"];
 	imprintedActions.push(actions)
 }
