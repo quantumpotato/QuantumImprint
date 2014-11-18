@@ -1,3 +1,19 @@
+imprint by "key", actions
+
+record has "key", "info", "timeindex", "timedirection", actions[]
+
+playRecords {
+  record.timeindex++
+  processRecordPlayback("key", "info",  actions, timeindex, timedirection)
+}
+
+function processRecordPlayback(key, info, actions, timeindex, timedirection) {
+if info.class = 'paint' {
+  drawPaintFromActions(actions)
+}
+}
+
+
 createFreshImprintSimple(data:{}) {
  apply data keys to new imprint
 
