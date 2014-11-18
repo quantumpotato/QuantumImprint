@@ -30,7 +30,6 @@ var mouse = new point(0,0);
 var imprintables = new Hashtable();
 var records = [];
 
-
 function createImprintable(key, info) {
 	var imprintHash = {"info" : info, "actions" : []};
 	imprintables.put(key, imprintHash);
@@ -40,7 +39,6 @@ function createRecord(key, info, actions) {
 	info["key"] = key;
 	var recordHash = {"info" : info, "actions" : actions, "timeIndex": 0, "timeDirection" : 1};
 	records.push(recordHash);
-	//alert("record actions: " + records[0].actions);
 }
 
 function createRecordFromImprint(key) {
@@ -58,20 +56,10 @@ function imprint(key, actions) {
 var mouseInfo = {"category" : "painter"};
 createImprintable("mouse", mouseInfo);
 
-// for (var i = 0; i < 10; i ++) {
-// 	imprint("mouse", {"x" : i * 10, "y" : i * 10, "color" : "blue", "radius" : 50});
-// }
-
-//alert("actions" + imprintables.get("mouse")["actions"]);
-
-//createRecordFromImprint("mouse");
-// alert(records[0]["actions"].length);
-// alert(imprintables.get("mouse")["actions"]);
 
 function playbackRecords() {
 	for (var i = 0; i < records.length; i++) {
 		var recordHash = records[i];
-		console.log(recordHash);
 		playbackRecordedImprint(recordHash["info"], recordHash["actions"][recordHash["timeIndex"]], recordHash["timeIndex"], recordHash["timeDirection"]);
 		recordHash["timeIndex"] = recordHash["timeIndex"] + recordHash["timeDirection"];
 		if (recordHash["timeIndex"] > recordHash["actions"].length - 1) {
@@ -113,19 +101,21 @@ function showClones() {
   }
 }
 
-var index = 0;
+var currentColor = "white";
+
+var level = 0;
 
 function draw() {
 	setBackground();
 	playbackRecords();
 
-	imprint("mouse", {"x" : mouse.x, "y" : mouse.y, "color" : "blue", "radius" : 15});
-	//showMouse();
-	// var data = {"x" : mouse.x, "y" : mouse.y}
-	// record(mouse, data);
-	// var points = records.get(mouse);
-	// console.log(points[index]);
-	// index++;
+	drawCircle(mouse, currentColor, 5);
+
+	imprint("mouse", {"x" : mouse.x, "y" : mouse.y, "color" : currentColor, "radius" : 15});
+}
+
+function randomColor() {
+	return ["blue", "green", "yellow", "red"][Math.floor(Math.random() * 4)];
 }
 
 $(document).ready(function() {
@@ -143,6 +133,8 @@ $(document).ready(function() {
 
   canvas.click(function(e) {
   	createRecordFromImprint("mouse");
+  	currentColor = randomColor();
+  	alert(currentColor);
   });
 
 });
